@@ -2,9 +2,16 @@
 const themeToggle = document.getElementById('theme-toggle');
 const htmlElement = document.documentElement;
 
-// Check for saved theme preference or default to dark
-const savedTheme = localStorage.getItem('theme') || 'dark';
-htmlElement.setAttribute('data-theme', savedTheme);
+// Set dark mode as default
+const savedTheme = localStorage.getItem('theme');
+if (!savedTheme) {
+    // First time visitor - set dark mode as default
+    htmlElement.setAttribute('data-theme', 'dark');
+    localStorage.setItem('theme', 'dark');
+} else {
+    // Use saved preference
+    htmlElement.setAttribute('data-theme', savedTheme);
+}
 
 themeToggle.addEventListener('click', () => {
     const currentTheme = htmlElement.getAttribute('data-theme');
