@@ -100,14 +100,17 @@ function updateProgressDots() {
 // Listen for scroll events
 window.addEventListener('scroll', updateProgressDots);
 
-// Mouse wheel horizontal scrolling (for desktop)
+// Mouse wheel horizontal scrolling (for desktop) - works with CSS scroll-snap
 document.addEventListener('wheel', (e) => {
     if (window.innerWidth <= 968) return; // Skip in mobile mode
 
     // Only handle vertical scroll and convert to horizontal
     if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
         e.preventDefault();
-        document.documentElement.scrollLeft += e.deltaY * 3;
+
+        // Let CSS scroll-snap handle the snapping
+        // Just scroll horizontally with reduced sensitivity
+        document.documentElement.scrollLeft += e.deltaY * 1.2;
     }
 }, { passive: false });
 
