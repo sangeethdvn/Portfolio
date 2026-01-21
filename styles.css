@@ -61,6 +61,8 @@ html {
     /* IE and Edge */
     scrollbar-width: none;
     /* Firefox */
+    /* Enable scroll snapping */
+    scroll-snap-type: x mandatory;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -96,6 +98,8 @@ body {
     justify-content: center;
     padding: 3rem 2rem 2rem;
     position: relative;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
 }
 
 .container {
