@@ -834,6 +834,12 @@ strong {
 /* Contact Panel */
 .contact {
     position: relative;
+    justify-content: flex-start;
+    padding-top: 120px;
+}
+
+.contact .section-title {
+    margin-bottom: 2rem;
 }
 
 .contact .progress-dots {
@@ -881,7 +887,7 @@ strong {
 /* Footer */
 .footer {
     position: relative;
-    margin-top: 4rem;
+    margin-top: 2rem;
     padding: 0;
     overflow: hidden;
 }
