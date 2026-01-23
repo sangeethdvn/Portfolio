@@ -1,206 +1,171 @@
-// Theme Toggle Functionality
-const themeToggle = document.getElementById('theme-toggle');
-const htmlElement = document.documentElement;
+// Register GSAP plugins
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
-// Set dark mode as default
-const savedTheme = localStorage.getItem('theme');
-if (!savedTheme) {
-    // First time visitor - set dark mode as default
-    htmlElement.setAttribute('data-theme', 'dark');
-    localStorage.setItem('theme', 'dark');
-} else {
-    // Use saved preference
-    htmlElement.setAttribute('data-theme', savedTheme);
-}
+document.addEventListener('DOMContentLoaded', () => {
+    // Theme Toggle Functionality
+    const themeToggle = document.getElementById('theme-toggle');
+    const htmlElement = document.documentElement;
 
-themeToggle.addEventListener('click', () => {
-    const currentTheme = htmlElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-
-    htmlElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-
-    themeToggle.style.transform = 'scale(1.1) rotate(360deg)';
-    setTimeout(() => {
-        themeToggle.style.transform = '';
-    }, 300);
-});
-
-// Mobile Navigation Toggle
-const navToggle = document.querySelector('.nav-toggle');
-const navMenu = document.querySelector('.nav-menu');
-
-navToggle.addEventListener('click', () => {
-    navToggle.classList.toggle('active');
-    navMenu.classList.toggle('active');
-});
-
-// Horizontal Scrolling Navigation
-const panels = document.querySelectorAll('.panel');
-const progressDots = document.querySelectorAll('.progress-dot');
-const navLinks = document.querySelectorAll('.nav-link');
-const sectionButtons = document.querySelectorAll('[data-section]');
-
-// Scroll to section function
-function scrollToSection(index) {
-    const panel = panels[index];
-    if (panel) {
-        // Check if we're in mobile/vertical mode
-        if (window.innerWidth <= 968) {
-            panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        } else {
-            // Horizontal scroll
-            const scrollAmount = index * window.innerWidth;
-            document.documentElement.scrollTo({
-                left: scrollAmount,
-                behavior: 'smooth'
-            });
-        }
-    }
-
-    // Close mobile menu
-    navToggle.classList.remove('active');
-    navMenu.classList.remove('active');
-}
-
-// Add click handlers to all section navigation elements
-sectionButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-        const sectionIndex = parseInt(btn.getAttribute('data-section'));
-        scrollToSection(sectionIndex);
-    });
-});
-
-// Update progress dots based on scroll position
-function updateProgressDots() {
-    if (window.innerWidth <= 968) return; // Skip in mobile mode
-
-    const scrollLeft = document.documentElement.scrollLeft || window.scrollX;
-    const viewportWidth = window.innerWidth;
-    const currentSection = Math.round(scrollLeft / viewportWidth);
-
-    progressDots.forEach((dot, index) => {
-        if (index === currentSection) {
-            dot.classList.add('active');
-        } else {
-            dot.classList.remove('active');
-        }
-    });
-
-    // Update nav links
-    navLinks.forEach((link, index) => {
-        if (index === currentSection) {
-            link.style.color = 'var(--color-accent)';
-        } else {
-            link.style.color = '';
-        }
-    });
-}
-
-// Listen for scroll events
-window.addEventListener('scroll', updateProgressDots);
-
-// Mouse wheel horizontal scrolling (for desktop) - works with CSS scroll-snap
-document.addEventListener('wheel', (e) => {
-    if (window.innerWidth <= 968) return; // Skip in mobile mode
-
-    // Only handle vertical scroll and convert to horizontal
-    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        e.preventDefault();
-
-        // Let CSS scroll-snap handle the snapping
-        // Just scroll horizontally with reduced sensitivity
-        document.documentElement.scrollLeft += e.deltaY * 1.2;
-    }
-}, { passive: false });
-
-// Keyboard navigation
-document.addEventListener('keydown', (e) => {
-    if (window.innerWidth <= 968) return;
-
-    const scrollLeft = document.documentElement.scrollLeft || window.scrollX;
-    const currentSection = Math.round(scrollLeft / window.innerWidth);
-
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-        e.preventDefault();
-        if (currentSection < panels.length - 1) {
-            scrollToSection(currentSection + 1);
-        }
-    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-        e.preventDefault();
-        if (currentSection > 0) {
-            scrollToSection(currentSection - 1);
-        }
-    }
-});
-
-// Touch swipe support for horizontal scrolling
-let touchStartX = 0;
-let touchEndX = 0;
-
-document.addEventListener('touchstart', (e) => {
-    touchStartX = e.changedTouches[0].screenX;
-}, { passive: true });
-
-document.addEventListener('touchend', (e) => {
-    if (window.innerWidth <= 968) return;
-
-    touchEndX = e.changedTouches[0].screenX;
-    const diff = touchStartX - touchEndX;
-
-    if (Math.abs(diff) > 50) { // Minimum swipe distance
-        const scrollLeft = document.documentElement.scrollLeft || window.scrollX;
-        const currentSection = Math.round(scrollLeft / window.innerWidth);
-
-        if (diff > 0 && currentSection < panels.length - 1) {
-            // Swipe left - go to next section
-            scrollToSection(currentSection + 1);
-        } else if (diff < 0 && currentSection > 0) {
-            // Swipe right - go to previous section
-            scrollToSection(currentSection - 1);
-        }
-    }
-}, { passive: true });
-
-// Typing effect for hero title
-const titles = ['Full Stack Developer', 'Django Expert', 'Python Developer', 'Backend Engineer'];
-let titleIndex = 0;
-let charIndex = 0;
-let isDeleting = false;
-const heroTitle = document.querySelector('.hero-title');
-
-function typeEffect() {
-    const currentTitle = titles[titleIndex];
-
-    if (isDeleting) {
-        heroTitle.textContent = currentTitle.substring(0, charIndex - 1);
-        charIndex--;
+    // Set dark mode as default
+    const savedTheme = localStorage.getItem('theme');
+    if (!savedTheme) {
+        // First time visitor - set dark mode as default
+        htmlElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
     } else {
-        heroTitle.textContent = currentTitle.substring(0, charIndex + 1);
-        charIndex++;
+        // Use saved preference
+        htmlElement.setAttribute('data-theme', savedTheme);
     }
 
-    let typeSpeed = isDeleting ? 50 : 100;
+    themeToggle.addEventListener('click', () => {
+        const currentTheme = htmlElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
 
-    if (!isDeleting && charIndex === currentTitle.length) {
-        typeSpeed = 2000;
-        isDeleting = true;
-    } else if (isDeleting && charIndex === 0) {
-        isDeleting = false;
-        titleIndex = (titleIndex + 1) % titles.length;
-        typeSpeed = 500;
+        htmlElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+
+        // Animate the toggle button
+        gsap.to(themeToggle, {
+            rotation: 360,
+            scale: 1.1,
+            duration: 0.3,
+            onComplete: () => {
+                gsap.set(themeToggle, { rotation: 0, scale: 1 });
+            }
+        });
+    });
+
+    // Mobile Navigation Toggle
+    const navToggle = document.querySelector('.nav-toggle');
+    const navMenu = document.querySelector('.nav-menu');
+
+    navToggle.addEventListener('click', () => {
+        navToggle.classList.toggle('active');
+        navMenu.classList.toggle('active');
+    });
+
+    // GSAP Horizontal Scroll Logic
+    const panels = gsap.utils.toArray('.panel');
+    const wrapper = document.querySelector('.horizontal-scroll-wrapper');
+    const progressDots = document.querySelectorAll('.progress-dot');
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    // We'll use a single timeline for the horizontal scroll
+    // This makes it easy to scrub and pin
+    const horizontalScroll = gsap.to(panels, {
+        xPercent: -100 * (panels.length - 1),
+        ease: "none", // Important for scroll linking
+        scrollTrigger: {
+            trigger: wrapper,
+            pin: true,
+            scrub: 1, // Smooth scrubbing
+            snap: 1 / (panels.length - 1), // Snap to sections
+            end: () => "+=" + (panels.length - 1) * window.innerHeight * 2, // Scroll distance = 2 screen heights per panel
+            onUpdate: (self) => {
+                updateActiveState(self.progress);
+            }
+        }
+    });
+
+    // Function to update active state of dots and nav links
+    function updateActiveState(progress) {
+        // Calculate current section index (0 to panels.length - 1)
+        // We use Math.round to find the closest integer index
+        const totalSections = panels.length - 1;
+        const currentSectionIndex = Math.round(progress * totalSections);
+
+        // Update dots
+        progressDots.forEach((dot, index) => {
+            if (index === currentSectionIndex) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+
+        // Update nav links
+        navLinks.forEach((link, index) => {
+            if (index === currentSectionIndex) {
+                link.style.color = 'var(--color-accent)';
+            } else {
+                link.style.color = '';
+            }
+        });
     }
 
-    setTimeout(typeEffect, typeSpeed);
-}
+    // Navigation Click Handling
+    function scrollToSection(index) {
+        // Calculate the scroll position based on the wrapper's width
+        // The total scroll distance is wrapper.offsetWidth * (panels.length - 1)
+        // So we want to scroll to: trigger.start + (totalDistance * (index / totalSections))
 
-// Start typing effect after page load
-setTimeout(typeEffect, 1500);
+        const totalWidth = wrapper.offsetWidth * (panels.length - 1);
+        const scrollAmount = (index / (panels.length - 1)) * totalWidth;
 
-// Initialize
-updateProgressDots();
+        // We need to get the scroll position relative to the document
+        // ScrollTrigger calculates this for us
+        const st = horizontalScroll.scrollTrigger;
 
-// Console Easter Egg
-console.log('%c👋 Hey there, fellow developer!', 'color: #818cf8; font-size: 20px; font-weight: bold;');
-console.log('%cLooking at the source code? Nice!', 'color: #a5b4fc; font-size: 14px;');
-console.log('%c📧 sangeethdevn@gmail.com', 'color: #98c379; font-size: 12px;');
+        // GSAP's scroll logging might be tricky with pinning, so we calculate exact scroll y
+        const targetY = st.start + scrollAmount;
+
+        gsap.to(window, {
+            scrollTo: targetY,
+            duration: 1,
+            ease: "power2.inOut"
+        });
+
+        // Close mobile menu if open
+        navToggle.classList.remove('active');
+        navMenu.classList.remove('active');
+    }
+
+    // Add click listeners to nav links and buttons
+    document.querySelectorAll('[data-section]').forEach(el => {
+        el.addEventListener('click', (e) => {
+            e.preventDefault();
+            const index = parseInt(el.getAttribute('data-section'));
+            scrollToSection(index);
+        });
+    });
+
+    // Typing effect for hero title
+    const titles = ['Full Stack Developer', 'Django Expert', 'Python Developer', 'Backend Engineer'];
+    let titleIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    const heroTitle = document.querySelector('.hero-title');
+
+    function typeEffect() {
+        const currentTitle = titles[titleIndex];
+
+        if (isDeleting) {
+            heroTitle.textContent = currentTitle.substring(0, charIndex - 1);
+            charIndex--;
+        } else {
+            heroTitle.textContent = currentTitle.substring(0, charIndex + 1);
+            charIndex++;
+        }
+
+        let typeSpeed = isDeleting ? 50 : 100;
+
+        if (!isDeleting && charIndex === currentTitle.length) {
+            typeSpeed = 2000;
+            isDeleting = true;
+        } else if (isDeleting && charIndex === 0) {
+            isDeleting = false;
+            titleIndex = (titleIndex + 1) % titles.length;
+            typeSpeed = 500;
+        }
+
+        setTimeout(typeEffect, typeSpeed);
+    }
+
+    // Start typing effect
+    setTimeout(typeEffect, 1500);
+
+    // Console Easter Egg
+    console.log('%c👋 Hey there, fellow developer!', 'color: #818cf8; font-size: 20px; font-weight: bold;');
+    console.log('%cLooking at the source code? Nice!', 'color: #a5b4fc; font-size: 14px;');
+    console.log('%c📧 sangeethdevn@gmail.com', 'color: #98c379; font-size: 12px;');
+});
