@@ -1165,44 +1165,65 @@ strong {
     }
 
     body {
-        flex-direction: column;
         width: 100%;
+        overflow-x: hidden;
     }
 
     .horizontal-scroll-wrapper {
         flex-direction: column;
         width: 100%;
+        height: auto; /* Allow content to dictate height */
     }
 
     .panel {
-        width: 100%;
-        min-height: auto;
-        padding: 4rem 1rem;
+        width: 100vw; /* Ensure full viewport width */
+        height: auto;
+        min-height: 100vh;
+        padding: 6rem 1.5rem 3rem; /* Adjusted padding */
+    }
+
+    /* Hero Section Specifics */
+    .hero {
+        padding-top: 100px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
 
     .hero-container {
         grid-template-columns: 1fr;
-        gap: 2rem;
+        gap: 3rem;
         text-align: center;
+        width: 100%;
     }
 
-    .hero-name {
-        font-size: 2rem;
+    .hero-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
-    .hero-description {
-        margin: 0 auto 2rem;
-    }
-
-    .hero-cta,
-    .hero-socials {
+    .hero-title-wrapper {
         justify-content: center;
     }
 
+    /* Terminal on Mobile */
     .hero-visual {
         justify-content: center;
+        width: 100%;
+        margin-top: 1rem;
     }
 
+    .terminal-window {
+        max-width: 100%;
+        width: 100%;
+    }
+    
+    .terminal-body {
+        min-height: 200px; /* Smaller terminal on mobile */
+    }
+
+    /* Other Panels */
     .about-content {
         grid-template-columns: 1fr;
     }
@@ -1210,7 +1231,7 @@ strong {
     .skills-grid {
         grid-template-columns: 1fr;
     }
-
+    
     .projects-grid {
         flex-direction: column;
         align-items: center;
@@ -1218,8 +1239,10 @@ strong {
 
     .project-card {
         max-width: 100%;
+        width: 100%;
     }
 
+    /* Remove horizontal-specific elements */
     .progress-dots {
         display: none;
     }
@@ -1228,14 +1251,23 @@ strong {
         display: none;
     }
 
+    /* Footer adjustments */
+    .footer {
+        margin-top: 0;
+    }
+
     .footer-top {
         flex-direction: column;
         text-align: center;
-        align-items: center;
+        gap: 1.5rem;
+    }
+    
+    .footer-brand {
+        text-align: center;
     }
 
-    .footer-brand {
-        margin-bottom: 1rem;
+    .footer-socials {
+        justify-content: center;
     }
 }
 
