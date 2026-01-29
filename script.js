@@ -44,35 +44,71 @@ document.addEventListener('DOMContentLoaded', () => {
         navMenu.classList.toggle('active');
     });
 
-    // GSAP Horizontal Scroll Logic
+    // GSAP Responsive Scroll Logic
     const panels = gsap.utils.toArray('.panel');
     const wrapper = document.querySelector('.horizontal-scroll-wrapper');
     const progressDots = document.querySelectorAll('.progress-dot');
     const navLinks = document.querySelectorAll('.nav-link');
+    let horizontalScrollTween; // To store the tween instance
 
-    // We'll use a single timeline for the horizontal scroll
-    // This makes it easy to scrub and pin
-    const horizontalScroll = gsap.to(panels, {
-        xPercent: -100 * (panels.length - 1),
-        ease: "none", // Important for scroll linking
-        scrollTrigger: {
-            trigger: wrapper,
-            pin: true,
-            scrub: 1, // Smooth scrubbing
-            snap: 1 / (panels.length - 1), // Snap to sections
-            end: () => "+=" + (panels.length - 1) * window.innerHeight * 2, // Scroll distance = 2 screen heights per panel
-            onUpdate: (self) => {
-                updateActiveState(self.progress);
+    ScrollTrigger.matchMedia({
+        // DESKTOP: Horizontal Scroll (> 968px)
+        "(min-width: 969px)": function () {
+            // Setup horizontal scroll
+            horizontalScrollTween = gsap.to(panels, {
+                xPercent: -100 * (panels.length - 1),
+                ease: "none",
+                scrollTrigger: {
+                    trigger: wrapper,
+                    pin: true,
+                    scrub: 1,
+                    snap: 1 / (panels.length - 1),
+                    end: () => "+=" + (panels.length - 1) * window.innerHeight * 2,
+                    onUpdate: (self) => {
+                        updateActiveState(self.progress);
+                    }
+                }
+            });
+        },
+
+        // MOBILE: Vertical Scroll (<= 968px)
+        "(max-width: 968px)": function () {
+            // Kill horizontal scroll if it exists (handled by matchMedia usually, but good for cleanup)
+            if (horizontalScrollTween) {
+                horizontalScrollTween.kill();
+                gsap.set(panels, { clearProps: "all" });
+                gsap.set(wrapper, { clearProps: "all" });
             }
+
+            // Create triggers for each panel to update active state on vertical scroll
+            panels.forEach((panel, i) => {
+                ScrollTrigger.create({
+                    trigger: panel,
+                    start: "top center",
+                    end: "bottom center",
+                    onToggle: (self) => {
+                        if (self.isActive) {
+                            updateActiveState(i / (panels.length - 1));
+                        }
+                    }
+                });
+            });
+        },
+
+        // ALL: Common setup
+        "all": function () {
+            // Any common ScrollTrigger setup
         }
     });
 
     // Function to update active state of dots and nav links
     function updateActiveState(progress) {
-        // Calculate current section index (0 to panels.length - 1)
-        // We use Math.round to find the closest integer index
         const totalSections = panels.length - 1;
-        const currentSectionIndex = Math.round(progress * totalSections);
+        // In vertical mode, progress might not be linear 0-1 for the whole page depending on how we calculate it,
+        // but for the updateActiveState function we expect a value that maps to the index.
+        // Actually, let's simplify: pass the index directly if possible, or handle float.
+
+        let currentSectionIndex = Math.round(progress * totalSections);
 
         // Update dots
         progressDots.forEach((dot, index) => {
@@ -95,25 +131,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Navigation Click Handling
     function scrollToSection(index) {
-        // Calculate the scroll position based on the wrapper's width
-        // The total scroll distance is wrapper.offsetWidth * (panels.length - 1)
-        // So we want to scroll to: trigger.start + (totalDistance * (index / totalSections))
+        const isMobile = window.innerWidth <= 968;
 
-        const totalWidth = wrapper.offsetWidth * (panels.length - 1);
-        const scrollAmount = (index / (panels.length - 1)) * totalWidth;
+        if (isMobile) {
+            // Vertical Scroll
+            const targetPanel = panels[index];
+            gsap.to(window, {
+                scrollTo: { y: targetPanel, autoKill: false },
+                duration: 1,
+                ease: "power2.inOut"
+            });
+        } else {
+            // Horizontal Scroll
+            const totalWidth = wrapper.offsetWidth * (panels.length - 1);
+            const scrollAmount = (index / (panels.length - 1)) * totalWidth;
 
-        // We need to get the scroll position relative to the document
-        // ScrollTrigger calculates this for us
-        const st = horizontalScroll.scrollTrigger;
+            // Ensure scrollTrigger exists before accessing properties
+            // We need to query the ScrollTrigger instance created inside matchMedia
+            const st = ScrollTrigger.getAll().find(st => st.vars.trigger === wrapper && st.pin);
 
-        // GSAP's scroll logging might be tricky with pinning, so we calculate exact scroll y
-        const targetY = st.start + scrollAmount;
-
-        gsap.to(window, {
-            scrollTo: targetY,
-            duration: 1,
-            ease: "power2.inOut"
-        });
+            if (st) {
+                const targetY = st.start + scrollAmount;
+                gsap.to(window, {
+                    scrollTo: targetY,
+                    duration: 1,
+                    ease: "power2.inOut"
+                });
+            }
+        }
 
         // Close mobile menu if open
         navToggle.classList.remove('active');
