@@ -482,4 +482,301 @@ Full Stack Developer | Python | Django
             terminalInput.focus();
         });
     }
+
+    // ========================================
+    // AMBIENT STARFIELD BACKGROUND (Dark Mode only)
+    // With Shooting Stars / Meteor Showers
+    // ========================================
+
+    const canvas = document.getElementById('starfield-canvas');
+    if (!canvas) return; // Safety check
+
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+    let shootingStars = [];
+    let animationId = null;
+    let isRunning = false;
+
+    // Configuration - Easy to tweak
+    const CONFIG = {
+        // Background stars
+        starCount: 100,            // Number of background stars
+        minSize: 0.5,              // Minimum star size
+        maxSize: 2,                // Maximum star size
+        minSpeed: 0.05,            // Minimum movement speed
+        maxSpeed: 0.2,             // Maximum movement speed
+        twinkleChance: 0.005,      // Probability of twinkling per frame
+        baseOpacity: 0.3,          // Base opacity (subtle)
+        maxOpacity: 0.7,           // Max opacity when twinkling
+
+        // Shooting stars
+        shootingStarChance: 0.02,  // Probability per frame (frequent showers)
+        shootingStarSpeed: 8,      // Speed of shooting stars
+        shootingStarLength: 80,    // Trail length
+        shootingStarSize: 2,       // Head size
+        maxShootingStars: 3        // Max simultaneous shooting stars
+    };
+
+    // Background Star class
+    class Star {
+        constructor() {
+            this.reset();
+        }
+
+        reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = CONFIG.minSize + Math.random() * (CONFIG.maxSize - CONFIG.minSize);
+            this.baseOpacity = CONFIG.baseOpacity + Math.random() * 0.2;
+            this.opacity = this.baseOpacity;
+            this.targetOpacity = this.baseOpacity;
+
+            // Velocity for slow floating
+            const angle = Math.random() * Math.PI * 2;
+            const speed = CONFIG.minSpeed + Math.random() * (CONFIG.maxSpeed - CONFIG.minSpeed);
+            this.vx = Math.cos(angle) * speed;
+            this.vy = Math.sin(angle) * speed;
+        }
+
+        update() {
+            // Move particle
+            this.x += this.vx;
+            this.y += this.vy;
+
+            // Wrap around edges
+            if (this.x < 0) this.x = canvas.width;
+            if (this.x > canvas.width) this.x = 0;
+            if (this.y < 0) this.y = canvas.height;
+            if (this.y > canvas.height) this.y = 0;
+
+            // Twinkling effect (subtle)
+            if (Math.random() < CONFIG.twinkleChance) {
+                this.targetOpacity = this.baseOpacity + Math.random() * (CONFIG.maxOpacity - this.baseOpacity);
+            } else if (Math.random() < CONFIG.twinkleChance * 2) {
+                this.targetOpacity = this.baseOpacity;
+            }
+
+            // Smooth opacity transition
+            this.opacity += (this.targetOpacity - this.opacity) * 0.05;
+        }
+
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+            ctx.fill();
+        }
+    }
+
+    // Shooting Star class with trail
+    class ShootingStar {
+        constructor() {
+            this.reset();
+        }
+
+        reset() {
+            // Start from random edge
+            const side = Math.floor(Math.random() * 2); // 0: top, 1: right
+
+            if (side === 0) {
+                // Start from top, move diagonally down-right
+                this.x = Math.random() * canvas.width;
+                this.y = -50;
+                this.angle = Math.PI / 4 + (Math.random() - 0.5) * 0.5; // ~45 degrees with variance
+            } else {
+                // Start from right, move diagonally down-left
+                this.x = canvas.width + 50;
+                this.y = Math.random() * canvas.height * 0.5; // Top half
+                this.angle = Math.PI * 3 / 4 + (Math.random() - 0.5) * 0.5; // ~135 degrees
+            }
+
+            this.speed = CONFIG.shootingStarSpeed + Math.random() * 4;
+            this.vx = Math.cos(this.angle) * this.speed;
+            this.vy = Math.sin(this.angle) * this.speed;
+
+            this.size = CONFIG.shootingStarSize;
+            this.trailLength = CONFIG.shootingStarLength;
+            this.opacity = 0;
+            this.targetOpacity = 1;
+            this.fadeIn = true;
+            this.dead = false;
+        }
+
+        update() {
+            // Move
+            this.x += this.vx;
+            this.y += this.vy;
+
+            // Fade in/out effect
+            if (this.fadeIn) {
+                this.opacity += 0.1;
+                if (this.opacity >= 1) {
+                    this.opacity = 1;
+                    this.fadeIn = false;
+                }
+            }
+
+            // Check if off-screen
+            if (this.x < -100 || this.x > canvas.width + 100 ||
+                this.y < -100 || this.y > canvas.height + 100) {
+                this.dead = true;
+            }
+        }
+
+        draw() {
+            if (this.opacity <= 0) return;
+
+            // Calculate trail end point
+            const trailX = this.x - this.vx * (this.trailLength / this.speed);
+            const trailY = this.y - this.vy * (this.trailLength / this.speed);
+
+            // Draw glowing trail with gradient
+            const gradient = ctx.createLinearGradient(this.x, this.y, trailX, trailY);
+            gradient.addColorStop(0, `rgba(255, 255, 255, ${this.opacity})`);
+            gradient.addColorStop(0.3, `rgba(200, 220, 255, ${this.opacity * 0.6})`);
+            gradient.addColorStop(0.7, `rgba(150, 180, 255, ${this.opacity * 0.3})`);
+            gradient.addColorStop(1, `rgba(100, 150, 255, 0)`);
+
+            ctx.beginPath();
+            ctx.moveTo(this.x, this.y);
+            ctx.lineTo(trailX, trailY);
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = this.size;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+
+            // Draw bright head with glow
+            const headGradient = ctx.createRadialGradient(
+                this.x, this.y, 0,
+                this.x, this.y, this.size * 3
+            );
+            headGradient.addColorStop(0, `rgba(255, 255, 255, ${this.opacity})`);
+            headGradient.addColorStop(0.4, `rgba(220, 240, 255, ${this.opacity * 0.6})`);
+            headGradient.addColorStop(1, `rgba(180, 200, 255, 0)`);
+
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
+            ctx.fillStyle = headGradient;
+            ctx.fill();
+
+            // Draw bright core
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+            ctx.fill();
+        }
+    }
+
+    // Initialize particles
+    function initStarfield() {
+        stars = [];
+        for (let i = 0; i < CONFIG.starCount; i++) {
+            stars.push(new Star());
+        }
+        shootingStars = [];
+    }
+
+    // Spawn shooting star
+    function spawnShootingStar() {
+        if (shootingStars.length < CONFIG.maxShootingStars &&
+            Math.random() < CONFIG.shootingStarChance) {
+            shootingStars.push(new ShootingStar());
+        }
+    }
+
+    // Resize canvas to match window
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Reinitialize particles on resize
+        if (isRunning) {
+            initStarfield();
+        }
+    }
+
+    // Animation loop
+    function animate() {
+        if (!isRunning) return;
+
+        // Clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Update and draw background stars (behind shooting stars)
+        stars.forEach(star => {
+            star.update();
+            star.draw();
+        });
+
+        // Spawn shooting stars
+        spawnShootingStar();
+
+        // Update and draw shooting stars
+        shootingStars.forEach((shootingStar, index) => {
+            shootingStar.update();
+            shootingStar.draw();
+
+            // Remove dead shooting stars
+            if (shootingStar.dead) {
+                shootingStars.splice(index, 1);
+            }
+        });
+
+        animationId = requestAnimationFrame(animate);
+    }
+
+    // Start starfield
+    function startStarfield() {
+        if (isRunning) return;
+        isRunning = true;
+        resizeCanvas();
+        initStarfield();
+        animate();
+    }
+
+    // Stop starfield
+    function stopStarfield() {
+        isRunning = false;
+        if (animationId) {
+            cancelAnimationFrame(animationId);
+            animationId = null;
+        }
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // Check theme and start/stop accordingly
+    function updateStarfieldForTheme() {
+        const currentTheme = htmlElement.getAttribute('data-theme');
+        if (currentTheme === 'dark') {
+            startStarfield();
+        } else {
+            stopStarfield();
+        }
+    }
+
+    // Initialize on load
+    updateStarfieldForTheme();
+
+    // Listen for theme changes
+    const themeObserver = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+                updateStarfieldForTheme();
+            }
+        });
+    });
+
+    themeObserver.observe(htmlElement, {
+        attributes: true,
+        attributeFilter: ['data-theme']
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', resizeCanvas);
+
+    // Cleanup on page unload (good practice)
+    window.addEventListener('beforeunload', () => {
+        stopStarfield();
+        themeObserver.disconnect();
+    });
 });
