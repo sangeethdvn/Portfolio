@@ -1,4 +1,4 @@
-// Register GSAP plugins
+﻿// Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -210,9 +210,9 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(typeEffect, 1500);
 
     // Console Easter Egg
-    console.log('%c👋 Hey there, fellow developer!', 'color: #818cf8; font-size: 20px; font-weight: bold;');
+    console.log('%cðŸ‘‹ Hey there, fellow developer!', 'color: #818cf8; font-size: 20px; font-weight: bold;');
     console.log('%cLooking at the source code? Nice!', 'color: #a5b4fc; font-size: 14px;');
-    console.log('%c📧 sangeethdevn@gmail.com', 'color: #98c379; font-size: 12px;');
+    console.log('%cðŸ“§ sangeethdvn@gmail.com', 'color: #98c379; font-size: 12px;');
 
     // ========================================
     // INTERACTIVE TERMINAL
@@ -267,7 +267,7 @@ resume.pdf</span>`;
 
             if (!target || target === '~' || target === '/') {
                 scrollToSection(0);
-                return `<span class="terminal-text"><span class="success">→ Navigating to home...</span></span>`;
+                return `<span class="terminal-text"><span class="success">â†’ Navigating to home...</span></span>`;
             }
 
             if (target === '..') {
@@ -276,14 +276,14 @@ resume.pdf</span>`;
                 const currentIndex = Math.round(st.progress * (panels.length - 1));
                 const newIndex = Math.max(0, currentIndex - 1);
                 scrollToSection(newIndex);
-                return `<span class="terminal-text"><span class="success">→ Going back...</span></span>`;
+                return `<span class="terminal-text"><span class="success">â†’ Going back...</span></span>`;
             }
 
             // Check if target exists in sections
             const sectionIndex = sections[target.replace('/', '')];
             if (sectionIndex !== undefined) {
                 scrollToSection(sectionIndex);
-                return `<span class="terminal-text"><span class="success">→ Navigating to ${target}...</span></span>`;
+                return `<span class="terminal-text"><span class="success">â†’ Navigating to ${target}...</span></span>`;
             }
 
             return `<span class="terminal-text"><span class="error">bash: cd: ${target}: No such directory</span></span>`;
@@ -294,9 +294,9 @@ resume.pdf</span>`;
 <span class="highlight">P S Sangeeth Devan</span>
 Full Stack Developer | Python | Django
 
-📍 Kerala, India
-📧 sangeethdevn@gmail.com
-🔗 github.com/sangeethdevn</span>`;
+ðŸ“ Kerala, India
+ðŸ“§ sangeethdvn@gmail.com
+ðŸ”— github.com/sangeethdevn</span>`;
         },
 
         cat: (args) => {
@@ -331,10 +331,10 @@ Full Stack Developer | Python | Django
         sudo: (args) => {
             const cmd = args.join(' ').toLowerCase();
             if (cmd.includes('make') && cmd.includes('sandwich')) {
-                return `<span class="terminal-text"><span class="error">Permission denied: Go make it yourself! 🥪</span></span>`;
+                return `<span class="terminal-text"><span class="error">Permission denied: Go make it yourself! ðŸ¥ª</span></span>`;
             }
             if (cmd.includes('rm') && cmd.includes('-rf')) {
-                return `<span class="terminal-text"><span class="error">Nice try! 😏</span></span>`;
+                return `<span class="terminal-text"><span class="error">Nice try! ðŸ˜</span></span>`;
             }
             return `<span class="terminal-text"><span class="error">[sudo] password for visitor: Access denied</span></span>`;
         },
@@ -363,7 +363,7 @@ Full Stack Developer | Python | Django
                 }, 1000);
             }, 500);
 
-            return `<span class="terminal-text"><span class="success">👋 Goodbye! Closing session...</span></span>`;
+            return `<span class="terminal-text"><span class="success">ðŸ‘‹ Goodbye! Closing session...</span></span>`;
         },
 
         neofetch: () => {
@@ -380,7 +380,7 @@ Full Stack Developer | Python | Django
 
         hire: () => {
             scrollToSection(5);
-            return `<span class="terminal-text"><span class="success">🎉 Great choice! Taking you to contact...</span></span>`;
+            return `<span class="terminal-text"><span class="success">ðŸŽ‰ Great choice! Taking you to contact...</span></span>`;
         },
 
         close: () => {
@@ -388,7 +388,7 @@ Full Stack Developer | Python | Django
             setTimeout(() => {
                 window.close();
             }, 500);
-            return `<span class="terminal-text"><span class="success">👋 Goodbye! Closing tab...</span>
+            return `<span class="terminal-text"><span class="success">ðŸ‘‹ Goodbye! Closing tab...</span>
 <span class="terminal-text">(If this doesn't work, your browser blocked it for security)</span></span>`;
         },
 
@@ -772,11 +772,62 @@ Full Stack Developer | Python | Django
     });
 
     // Handle window resize
-    window.addEventListener('resize', resizeCanvas);
 
-    // Cleanup on page unload (good practice)
-    window.addEventListener('beforeunload', () => {
-        stopStarfield();
-        themeObserver.disconnect();
+// Cleanup on page unload (good practice)
+window.addEventListener('beforeunload', () => {
+    stopStarfield();
+    themeObserver.disconnect();
+});
+
+// ========================================
+// EMAIL MODAL LOGIC
+// ========================================
+const emailModal = document.getElementById('email-modal');
+const emailLinks = document.querySelectorAll('.email-link');
+const modalClose = document.querySelector('.email-modal-close');
+const modalOverlay = document.querySelector('.email-modal-overlay');
+const emailOptions = document.querySelectorAll('.email-option');
+const myEmail = 'sangeethdvn@gmail.com';
+
+// Intercept clicks on email links
+emailLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        emailModal.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling
     });
+});
+
+// Close modal function
+function closeModal() {
+    emailModal.classList.remove('active');
+    document.body.style.overflow = ''; // Restore scrolling
+}
+
+modalClose?.addEventListener('click', closeModal);
+modalOverlay?.addEventListener('click', closeModal);
+
+// Handle email options
+emailOptions.forEach(option => {
+    option.addEventListener('click', (e) => {
+        const action = option.getAttribute('data-action');
+
+        if (action === 'gmail') {
+            window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${myEmail}`, '_blank');
+            closeModal();
+        } else if (action === 'outlook') {
+            window.open(`https://outlook.office.com/mail/deeplink/compose?to=${myEmail}`, '_blank');
+            closeModal();
+        } else if (action === 'copy') {
+            navigator.clipboard.writeText(myEmail).then(() => {
+                const feedback = option.querySelector('.copy-feedback');
+                feedback.classList.add('show');
+                setTimeout(() => feedback.classList.remove('show'), 2000);
+            });
+        } else if (action === 'default') {
+            closeModal();
+        }
+    });
+});
+
 });

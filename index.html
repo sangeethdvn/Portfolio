@@ -102,7 +102,7 @@
                                     d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
                             </svg>
                         </a>
-                        <a href="mailto:sangeethdevn@gmail.com" class="social-link" aria-label="Email">
+                        <a href="mailto:sangeethdvn@gmail.com" class="social-link email-link" aria-label="Email">
                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round">
@@ -237,9 +237,12 @@
                             </div>
                             <span class="experience-date">Sep 2025 – Present</span>
                             <ul class="experience-list">
-                                <li>Developed a dynamic resume builder web application</li>
-                                <li>Styled and optimized user-friendly interface</li>
-                                <li>Implemented a real-time preview feature</li>
+                                <li>Worked as a Django backend developer on company-owned web applications used by real
+                                    users.</li>
+                                <li>Designed and developed 20+ REST API endpoints using Django and Django REST Framework
+                                    for web platforms.</li>
+                                <li>Implemented role-based access control (RBAC) and permission-secured APIs to support
+                                    multi-tenant web applications.</li>
                             </ul>
                         </div>
                     </div>
@@ -252,9 +255,12 @@
                             </div>
                             <span class="experience-date">Dec 2024 – Aug 2025</span>
                             <ul class="experience-list">
-                                <li>Designed and implemented RESTful APIs using Django</li>
-                                <li>Developed scalable backend services in Python</li>
-                                <li>Built dynamic Django views and serializers</li>
+                                <li>Built dynamic and reusable Django views and serializers to handle complex business
+                                    logic with clean, maintainable code.</li>
+                                <li>Integrated front-end and back-end components to enhance the overall user experience.
+                                </li>
+                                <li>Designed and developed RESTful APIs using Django for seamless data exchange
+                                    including payment gateway integration.</li>
                             </ul>
                         </div>
                     </div>
@@ -384,14 +390,14 @@
                         Feel free to reach out!
                     </p>
                     <div class="contact-info">
-                        <a href="mailto:sangeethdevn@gmail.com" class="contact-item">
+                        <a href="mailto:sangeethdvn@gmail.com" class="contact-item email-link">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
                                 </path>
                                 <polyline points="22,6 12,13 2,6"></polyline>
                             </svg>
-                            <span>sangeethdevn@gmail.com</span>
+                            <span>sangeethdvn@gmail.com</span>
                         </a>
                         <a href="tel:+918921149295" class="contact-item">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -412,7 +418,7 @@
                             <span>Cheruthuruthy, Kerala</span>
                         </a>
                     </div>
-                    <a href="mailto:sangeethdevn@gmail.com" class="btn btn-primary">Say Hello 👋</a>
+                    <a href="mailto:sangeethdvn@gmail.com" class="btn btn-primary email-link">Say Hello 👋</a>
                 </div>
                 <footer class="footer">
                     <div class="footer-content">
@@ -440,7 +446,8 @@
                                             d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
                                     </svg>
                                 </a>
-                                <a href="mailto:sangeethdevn@gmail.com" class="footer-social-link" aria-label="Email">
+                                <a href="mailto:sangeethdvn@gmail.com" class="footer-social-link email-link"
+                                    aria-label="Email">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                         stroke-linejoin="round">
@@ -492,6 +499,52 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
     <script src="script.js"></script>
+
+    <!-- Email Choice Modal -->
+    <div id="email-modal" class="email-modal">
+        <div class="email-modal-overlay"></div>
+        <div class="email-modal-content">
+            <div class="email-modal-header">
+                <h3>Email Options</h3>
+                <button class="email-modal-close" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="email-options">
+                <button class="email-option" data-action="gmail">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                    <span>Open in Gmail</span>
+                </button>
+                <button class="email-option" data-action="outlook">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                    <span>Open in Outlook</span>
+                </button>
+                <button class="email-option" data-action="copy">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                        <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                    </svg>
+                    <span>Copy Email Address</span>
+                    <span class="copy-feedback">Copied!</span>
+                </button>
+                <a href="mailto:sangeethdvn@gmail.com" class="email-option" data-action="default">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    <span>Open in Default App</span>
+                </a>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
