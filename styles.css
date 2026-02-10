@@ -1344,3 +1344,133 @@ strong {
     display: none;
     /* Completely remove from rendering */
 }
+/* ========================================
+   EMAIL CHOICE MODAL
+   ======================================== */
+
+.email-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition-base);
+}
+
+.email-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.email-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+}
+
+.email-modal-content {
+    position: relative;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    width: 90%;
+    max-width: 400px;
+    padding: 2rem;
+    box-shadow: 0 25px 50px -12px var(--color-shadow);
+    transform: translateY(20px);
+    transition: transform var(--transition-base);
+}
+
+.email-modal.active .email-modal-content {
+    transform: translateY(0);
+}
+
+.email-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.email-modal-header h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.email-modal-close {
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font-size: 1.5rem;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color var(--transition-fast);
+}
+
+.email-modal-close:hover {
+    color: var(--color-accent);
+}
+
+.email-options {
+    display: grid;
+    gap: 1rem;
+}
+
+.email-option {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text-primary);
+    font-weight: 500;
+    transition: all var(--transition-base);
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
+.email-option:hover {
+    border-color: var(--color-accent);
+    background: var(--color-accent-subtle);
+    transform: translateX(5px);
+}
+
+.email-option svg {
+    color: var(--color-accent);
+}
+
+.copy-feedback {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-accent);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+    pointer-events: none;
+}
+
+.copy-feedback.show {
+    opacity: 1;
+}
